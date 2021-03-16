@@ -1,6 +1,7 @@
 const fs = require("fs");
 const http = require("http");
 const url = require("url");
+const replaceTemplate = require("./modules/replaceTemplate");
 ////////////////////////////////
 // FILE
 ///////////////////////////////////
@@ -30,23 +31,7 @@ const url = require("url");
 ///////////////////////////////////////
 // SERVER
 ///////////////////////////////////////
-const replaceTemplate = function (temp, product) {
-  let output = temp
-    .replace(/{%PRODUCTNAME%}/g, product.productName)
-    .replace(/{%PRICE%}/g, product.price)
-    .replace(/{%IMAGE%}/g, product.image)
-    .replace(/{%FROM%}/g, product.from)
-    .replace(/{%ID%}/g, product.id)
-    .replace(/{%NUTRIENTS%}/g, product.nutrients)
-    .replace(/{%DESCRIPTION%}/g, product.description)
-    .replace(/{%QUANTITY%}/g, product.quantity);
 
-  if (!product.organic)
-    output = output.replace(/{%NOT_ORGANIC%}/g, "not-organic");
-  else output = output.replace(/{%NOT_ORGANIC%}/g, "");
-
-  return output;
-};
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const productData = JSON.parse(data);
 
