@@ -48,6 +48,8 @@ const replaceTemplate = function (temp, product) {
   return output;
 };
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
+const productData = JSON.parse(data);
+
 const tempOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`,
   "utf-8"
@@ -60,13 +62,12 @@ const tempCard = fs.readFileSync(
   `${__dirname}/templates/template-card.html`,
   "utf-8"
 );
-const productData = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-  const pathName = req.url;
+  const { query, pathname } = url.parse(req.url, true);
 
   // Overview page
-  if (pathName === "/overview" || pathName === "/") {
+  if (pathname === "/overview" || pathname === "/") {
     const cardsHtml = productData
       .map((el) => replaceTemplate(tempCard, el))
       .join("");
@@ -75,11 +76,14 @@ const server = http.createServer((req, res) => {
     res.end(overviewHtml);
 
     // Product page
-  } else if (pathName === "/product") {
-    res.end("This is the product.");
+  } else if (pathname === "/product") {
+    const product = productData[query.id];
+    const output = replaceTemplate(tempProduct, product);
+    res.writeHead(200, { "Content-type": "text/html" });
+    res.end(output);
 
     // API
-  } else if (pathName === "/api") {
+  } else if (pathname === "/api") {
     res.writeHead(200, {
       "Content-type": "application/json",
     });
