@@ -1,7 +1,14 @@
+// Core modules
 const fs = require("fs");
 const http = require("http");
 const url = require("url");
+
+// 3rd party modules
+const slugify = require("slugify");
+
+// my own modules
 const replaceTemplate = require("./modules/replaceTemplate");
+
 ////////////////////////////////
 // FILE
 ///////////////////////////////////
@@ -34,7 +41,13 @@ const replaceTemplate = require("./modules/replaceTemplate");
 
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const productData = JSON.parse(data);
-
+const slugs = productData.map((prod) =>
+  slugify(prod.productName, { lower: true })
+);
+productData.forEach((prod) => {
+  prod.slug = slugify(prod.productName, { lower: true });
+});
+// console.log(productData);
 const tempOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`,
   "utf-8"
@@ -62,7 +75,8 @@ const server = http.createServer((req, res) => {
 
     // Product page
   } else if (pathname === "/product") {
-    const product = productData[query.id];
+    // const product = productData[query.id];
+    const product = productData.find((prod) => prod.slug === query.slug);
     const output = replaceTemplate(tempProduct, product);
     res.writeHead(200, { "Content-type": "text/html" });
     res.end(output);
@@ -82,7 +96,6 @@ const server = http.createServer((req, res) => {
     });
     res.end("<h1>This page cannot be found.</h1>");
   }
-  // res.end("Hello from the server!");
 });
 
 server.listen(8080, "127.0.0.1", () => {

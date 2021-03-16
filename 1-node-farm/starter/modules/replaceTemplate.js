@@ -8,6 +8,7 @@ module.exports = function (temp, product) {
     .replace(/{%ID%}/g, product.id)
     .replace(/{%NUTRIENTS%}/g, product.nutrients)
     .replace(/{%DESCRIPTION%}/g, product.description)
+    .replace(/{%SLUG%}/g, product.slug)
     .replace(/{%QUANTITY%}/g, product.quantity);
 
   if (!product.organic)
