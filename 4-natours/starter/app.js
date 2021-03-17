@@ -1,5 +1,7 @@
 const fs = require('fs');
 const express = require('express');
+const { json } = require('express');
+const { isNull } = require('util');
 // const { json } = require('express');
 
 const app = express();
@@ -99,7 +101,19 @@ app.patch('/api/v1/tours/:id', (req, res) => {
 });
 
 app.delete('/api/v1/tours/:id', (req, res) => {
-  21;
+  // Here we delete the element from the tours array, but not from the file, so when restart the server no data has been really deleted
+  if (tours.every((t) => t.id !== req.params.id * 1)) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  const newTours = tours.filter((t) => t.id !== req.params.id * 1);
+  console.log(newTours);
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
 });
 
 // Starting server...
