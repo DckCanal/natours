@@ -3,6 +3,9 @@ const express = require('express');
 // const { json } = require('express');
 
 const app = express();
+
+// Adding json middleware for access body of request
+app.use(express.json());
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, 'utf-8')
 );
@@ -27,6 +30,31 @@ app.get('/api/v1/tours', (req, res) => {
       tours,
     },
   });
+});
+
+app.post('/api/v1/tours', (req, res) => {
+  //console.log(req.body);
+
+  // create a new id
+  const newId = tours[tours.length - 1].id + 1;
+
+  // create new tour and adding it to tours
+  const newTour = Object.assign({ id: newId }, req.body);
+  tours.push(newTour);
+
+  // write it to "database", sending a response to the client with the new created object (with ID)
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(tours),
+    (err) => {
+      res.status(201).json({
+        status: 'success',
+        data: {
+          tour: newTour,
+        },
+      }); // 201 means 'created'
+    }
+  );
 });
 
 // Starting server...
