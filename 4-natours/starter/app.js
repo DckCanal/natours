@@ -39,7 +39,7 @@ app.get('/api/v1/tours/:id', (req, res) => {
   if (!tour) {
     return res.status(404).json({
       status: 'fail',
-      message: 'invalid id',
+      message: 'Invalid ID',
     });
   }
   res.status(200).json({
@@ -73,6 +73,33 @@ app.post('/api/v1/tours', (req, res) => {
       }); // 201 means 'created'
     }
   );
+});
+
+app.patch('/api/v1/tours/:id', (req, res) => {
+  const updatedFields = req.body;
+  const tourToUpdate = tours.find((t) => t.id === req.params.id * 1);
+  if (!tours) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  Object.assign(tourToUpdate, updatedFields);
+  console.log(tours);
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(tours),
+    (err) => {
+      res.status(200).json({
+        status: 'success',
+        data: { tour: tourToUpdate },
+      });
+    }
+  );
+});
+
+app.delete('/api/v1/tours/:id', (req, res) => {
+  21;
 });
 
 // Starting server...
