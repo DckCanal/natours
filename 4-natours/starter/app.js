@@ -13,15 +13,15 @@ const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 // Adding myown middleware
-app.use((req,res,next) => {
+app.use((req, res, next) => {
   console.log('Hello from the middleware!');
   next();
 });
 
-app.use((req,res,next) => {
+app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
-})
+});
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, 'utf-8')
@@ -34,7 +34,6 @@ const tours = JSON.parse(
 //     .status(200)
 //     .json({ message: 'Hello from the server side!', app: 'natours' });
 // });
-
 
 // 2) ROUTE HANDLERS
 const getAllTours = (req, res) => {
@@ -133,6 +132,28 @@ const deleteTour = (req, res) => {
   });
 };
 
+const notImplResponse = (req, res) => {
+  res.status(500).json({
+    status: 'fail',
+    message: 'Resource not yet implemented',
+  });
+};
+
+const getAllUsers = (req, res) => {
+  notImplResponse(req, res);
+};
+const getUser = (req, res) => {
+  notImplResponse(req, res);
+};
+const createUser = (req, res) => {
+  notImplResponse(req, res);
+};
+const updateUser = (req, res) => {
+  notImplResponse(req, res);
+};
+const deleteUser = (req, res) => {
+  notImplResponse(req, res);
+};
 
 // 3) ROUTES
 // app.get('/api/v1/tours', getAllTours);
@@ -141,12 +162,18 @@ const deleteTour = (req, res) => {
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
-app
-  .route('/api/v1/tours/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+tourRouter.route('/').get(getAllTours).post(createTour);
+tourRouter.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
+
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+
+// mounting routers
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 // 4) SERVER
 // Starting server...
