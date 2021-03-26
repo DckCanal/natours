@@ -5,12 +5,28 @@ const tours = JSON.parse(
 );
 
 exports.checkID = (req, res, next, val) => {
-  console.log(`CheckID run! ${val}`);
+  // console.log(`CheckID run! ${val}`);
   const tour = tours.find((t) => t.id === req.params.id * 1);
   if (!tour) {
     return res.status(404).json({
       status: 'fail',
       message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing tour name',
+    });
+  }
+  if (!req.body.price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing tour price',
     });
   }
   next();
