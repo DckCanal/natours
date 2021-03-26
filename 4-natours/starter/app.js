@@ -14,38 +14,15 @@ const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 // Adding myown middleware
-app.use((req, res, next) => {
-  console.log('Hello from the middleware!');
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('Hello from the middleware!');
+//   next();
+// });
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-
-
-// Routing
-// app.get('/', (req, res) => {
-//   //   res.status(200).send('Hello from the server side!');
-//   res
-//     .status(200)
-//     .json({ message: 'Hello from the server side!', app: 'natours' });
-// });
-
-// 2) ROUTE HANDLERS
-
-
-
-
-// 3) ROUTES
-// app.get('/api/v1/tours', getAllTours);
-// app.get('/api/v1/tours/:id', getTour);
-// app.post('/api/v1/tours', createTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
-
-
 
 // mounting routers
 app.use('/api/v1/tours', tourRouter);
