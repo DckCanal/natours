@@ -13,6 +13,9 @@ const app = express();
 // Adding json middleware for access body of request
 app.use(express.json());
 app.use(morgan('dev'));
+
+// Serving static files
+app.use(express.static(`${__dirname}/public`));
 // Adding myown middleware
 // app.use((req, res, next) => {
 //   console.log('Hello from the middleware!');
