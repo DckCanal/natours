@@ -17,21 +17,21 @@ const Tour = require('../models/tourModel');
 //   next();
 // };
 
-exports.checkBody = (req, res, next) => {
-  if (!req.body.name) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Missing tour name',
-    });
-  }
-  if (!req.body.price) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Missing tour price',
-    });
-  }
-  next();
-};
+// exports.checkBody = (req, res, next) => {
+//   if (!req.body.name) {
+//     return res.status(400).json({
+//       status: 'fail',
+//       message: 'Missing tour name',
+//     });
+//   }
+//   if (!req.body.price) {
+//     return res.status(400).json({
+//       status: 'fail',
+//       message: 'Missing tour price',
+//     });
+//   }
+//   next();
+// };
 
 exports.getAllTours = (req, res) => {
   // send all the data about the tours
@@ -56,7 +56,22 @@ exports.getTour = (req, res) => {
   });
 };
 
-exports.createTour = (req, res) => {
+exports.createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data set',
+    });
+  }
+
   // create a new id
   // const newId = tours[tours.length - 1].id + 1;
   // // create new tour and adding it to tours
