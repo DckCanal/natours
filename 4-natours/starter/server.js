@@ -21,36 +21,6 @@ mongoose
   })
   .then((connection) => console.log('DB connection successful!'));
 
-const tourSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    unique: true,
-    required: [true, 'A tour must have a name'],
-  },
-  rating: {
-    type: Number,
-    default: 4.5,
-  },
-  price: {
-    type: Number,
-    required: [true, 'A tour must have a price'],
-  },
-});
-
-const Tour = mongoose.model('Tour', tourSchema);
-
-const testTour = new Tour({
-  name: 'The Mountain Hiker',
-  rating: 4.7,
-  price: 497,
-});
-testTour
-  .save()
-  .then((doc) => {
-    console.log(doc);
-  })
-  .catch((err) => console.error(err));
-
 // Import the app file only after reading the config file!
 const app = require('./app');
 const port = process.env.PORT || 3000;
