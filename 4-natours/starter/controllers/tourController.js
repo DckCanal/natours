@@ -141,11 +141,23 @@ exports.updateTour = async (req, res) => {
   // );
 };
 
-exports.deleteTour = (req, res) => {
+exports.deleteTour = async (req, res) => {
   // Here we delete the element from the tours array, but not from the file, so when restart the server no data has been really deleted
   //const newTours = tours.filter((t) => t.id !== req.params.id * 1);
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
+
+  try {
+    // const query = await Tour.deleteOne({ _id: req.params.id }); OR, IN A BETTER WAY...
+    const query = await Tour.findByIdAndDelete(req.params.id);
+    // query contains the deleted object, but usually it's not set back to the client
+    // the 204 status code indeed is for a response with no body.
+    res.status(204).json({
+      status: 'success',
+      data: { query },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
