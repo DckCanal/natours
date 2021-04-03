@@ -37,6 +37,7 @@ exports.getAllTours = async (req, res) => {
   // send all the data about the tours
   try {
     // Building the query
+    // eslint-disable-next-line node/no-unsupported-features/es-syntax
     const queryObj = { ...req.query };
     const excludedFields = ['fields', 'sort', 'page', 'limit'];
     excludedFields.forEach((el) => delete queryObj[el]);
