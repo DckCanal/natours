@@ -37,17 +37,20 @@ exports.getAllTours = async (req, res) => {
   // send all the data about the tours
   try {
     // Building the query
+
+    // 1A) Filtering
     // eslint-disable-next-line node/no-unsupported-features/es-syntax
     const queryObj = { ...req.query };
     const excludedFields = ['fields', 'sort', 'page', 'limit'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
+    // 1B) Advanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(
       /\b(gte|gt|lte|lt)\b/g,
       (matchedStr) => `$${matchedStr}`
     );
-    const query = Tour.find(JSON.parse(queryStr));
+    let query = Tour.find(JSON.parse(queryStr));
 
     /*
     const query = Tour.find()
@@ -55,6 +58,14 @@ exports.getAllTours = async (req, res) => {
       .where('difficulty').equals('easy');
 
     */
+
+    // 2) Sorting
+    if (req.query.sort) {
+      // mongoose syntax: sort('price ratingsAverage')
+      query = query.sort(req.query.sort.split(',').join(' '));
+    } else {
+      query = query.sort('-createdAt');
+    }
 
     // Executing the query
     const tours = await query;
