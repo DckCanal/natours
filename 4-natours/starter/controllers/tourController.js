@@ -67,6 +67,14 @@ exports.getAllTours = async (req, res) => {
       query = query.sort('-createdAt');
     }
 
+    // 3) Field limiting -> projecting
+    if (req.query.fields) {
+      // mongoose syntax: select('name duration price -excludedField')
+      query = query.select(req.query.fields.split(',').join(' '));
+    } else {
+      query = query.select('-__v');
+    }
+
     // Executing the query
     const tours = await query;
 

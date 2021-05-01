@@ -59,6 +59,7 @@ const tourSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now(),
+      select: false, // never send it to the user, it's an internal data...
     },
     startDates: [Date],
     slug: String,
